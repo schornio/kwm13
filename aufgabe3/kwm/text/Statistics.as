@@ -6,13 +6,15 @@ package kwm.text
 	{
 		public var words:Vector.<String> = null; 
 		public var numbers:Vector.<uint> = null; 
+		
+		public var wordsLength:int = 0;
 
 		public var topWordIndex:int;
 		
 		public function Statistics() 
 		{
-			this.words = new Vector.<String>(0, false);
-			this.numbers = new Vector.<uint>(0, false); 
+			this.words = new Vector.<String>(10, true);
+			this.numbers = new Vector.<uint>(10, true); 
 			this.topWordIndex = -1; 
 		}
 		
@@ -33,7 +35,7 @@ package kwm.text
 		{
 			word = word.toLowerCase();
 			
-			for(var i:int = 0; i < words.length; i++)
+			for(var i:int = 0; i < wordsLength; i++)
 			{
 				if(words[i] == word)
 				{
@@ -44,9 +46,8 @@ package kwm.text
 				}
 			}
 			// Fall 1: Wort noch nicht vorhanden: 
-			words.push(word);
-			numbers.push(1);
-			isTopWord(words.length - 1);
+			pushWord(word);
+			isTopWord(wordsLength - 1);
 		}
 		
 		public function isTopWord(index:int) : void 
@@ -63,7 +64,7 @@ package kwm.text
 		{ 
 			word = word.toLowerCase();
 			
-			for(var i:int = 0; i < words.length; i++) 
+			for(var i:int = 0; i < wordsLength; i++) 
 			{
 				if(word == words[i])
 				{
@@ -76,7 +77,7 @@ package kwm.text
 
 		public function countDifferent():int 
 		{ 
-			return words.length;
+			return wordsLength;
 		}
 
 		public function print(startIdx:int, n:uint):void 
@@ -101,6 +102,29 @@ package kwm.text
 			if(topWordIndex == -1) return 0;
 			
 			return numbers[topWordIndex];
+		}
+		
+		public function pushWord(word:String) : void 
+		{
+			if(wordsLength >= words.length)
+			{
+				var longerWordsLength: int = wordsLength * 2;
+				var longerWords: Vector.<String> = new Vector.<String>(longerWordsLength, true); 
+				var longerNumbers: Vector.<uint> = new Vector.<uint>(longerWordsLength, true);
+				
+				for(var i:int = 0; i < wordsLength; i++)
+				{
+					longerWords[i] = words[i];
+					longerNumbers[i] = numbers[i];
+				}
+				
+				words = longerWords;
+				numbers = longerNumbers;
+			}
+			
+			words[wordsLength] = word;
+			numbers[wordsLength] = 1;
+			wordsLength++;
 		}
 	}
 }
